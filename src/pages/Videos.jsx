@@ -1,20 +1,18 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import VideoCard from "../components/VideoCard";
-import Video from "../api/Video";
+import { useYoutubeApi } from "../context/YoutubeApiContext";
 
 export default function Videos() {
   const { keyword } = useParams();
+  const { youtube } = useYoutubeApi();
   const {
     isLoading,
     error,
     data: videos,
   } = useQuery({
     queryKey: ["videoList", keyword],
-    queryFn: () => {
-      const youtube = new Video();
-      return youtube.getVideoList(keyword);
-    },
+    queryFn: () => youtube.getVideoList(keyword),
     staleTime: 1000 * 60 * 60,
   });
   return (

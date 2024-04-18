@@ -1,13 +1,6 @@
-import axios from "axios";
-
 export default class Video {
-  constructor() {
-    this.httpClient = axios.create({
-      baseURL: "https://youtube.googleapis.com/youtube/v3",
-      params: {
-        key: process.env.REACT_APP_YOUTUBE_API_KEY,
-      },
-    });
+  constructor(apiClient) {
+    this.apiClient = apiClient;
   }
 
   async getVideoList(keyword) {
@@ -16,8 +9,8 @@ export default class Video {
   }
 
   async #searchByKeyword(keyword) {
-    return this.httpClient
-      .get("search", {
+    return this.apiClient
+      .getVideoList({
         params: {
           part: "snippet",
           maxResults: 25,
@@ -28,16 +21,14 @@ export default class Video {
   }
 
   async #mostPopular() {
-    return axios.get(`/videos/search.json`).then((res) => res.data.items);
+    return this.apiClient
+      .videos({
+        params: {
+          part: "snippet",
+          maxResults: 25,
+          chart: "mostPopular",
+        },
+      })
+      .then((res) => res.data.items);
   }
 }
-
-// export const getVideoList = async (keyword) => {
-//   // const data = await res.json(); // Response 객체를 한 번만 json으로 변환
-//   // return data.items;
-//   return axios
-//     .get(
-//       `/search?part=snippet&maxResults=25&q=${keyword}&key=`
-//     )
-//     .then((res) => res.data.items);
-// };
