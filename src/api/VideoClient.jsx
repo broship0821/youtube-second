@@ -17,4 +17,8 @@ export default class VideoClient {
   async videos(params) {
     return this.httpClient.get("search", params);
   }
+
+  async channels(params) {
+    return this.httpClient.get("channels", params);
+  }
 }

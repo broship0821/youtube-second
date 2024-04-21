@@ -8,6 +8,12 @@ export default class Video {
     return this.#searchByKeyword(keyword);
   }
 
+  async channelImgURL(id) {
+    return this.apiClient
+      .channels({ params: { part: "snippet", id } })
+      .then((res) => res.data.items[0].snippet.thumbnails.default.url);
+  }
+
   async #searchByKeyword(keyword) {
     return this.apiClient
       .getVideoList({
