@@ -1,8 +1,10 @@
 import axios from "axios";
 
 export default class FakeVideoClient {
-  async getVideoList() {
-    return axios.get(`/videos/search.json`);
+  async getVideoList({ params }) {
+    return params.relatedToVideoId
+      ? axios.get(`/videos/related.json`)
+      : axios.get(`/videos/search.json`);
   }
 
   async videos() {

@@ -3,9 +3,19 @@ export default class Video {
     this.apiClient = apiClient;
   }
 
-  async getVideoList(keyword) {
-    // return keyword ? this.#searchByKeyword(keyword) : this.#mostPopular();
-    return this.#searchByKeyword(keyword);
+  async relatedVideos(id) {
+    return this.apiClient
+      .getVideoList({
+        params: {
+          part: "snippet",
+          maxResults: 25,
+          type: "video",
+          // relatedToVideoId: id,
+        },
+      })
+      .then((res) =>
+        res.data.items.map((item) => ({ ...item, id: item.id.videoId }))
+      );
   }
 
   async channelImgURL(id) {
@@ -14,16 +24,24 @@ export default class Video {
       .then((res) => res.data.items[0].snippet.thumbnails.default.url);
   }
 
+  async getVideoList(keyword) {
+    // return keyword ? this.#searchByKeyword(keyword) : this.#mostPopular();
+    return this.#searchByKeyword(keyword);
+  }
+
   async #searchByKeyword(keyword) {
     return this.apiClient
       .getVideoList({
         params: {
           part: "snippet",
           maxResults: 25,
+          type: "video",
           q: keyword,
         },
       })
-      .then((res) => res.data.items);
+      .then((res) =>
+        res.data.items.map((item) => ({ ...item, id: item.id.videoId }))
+      );
   }
 
   async #mostPopular() {
